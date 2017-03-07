@@ -1,0 +1,381 @@
+
+<!-- DEPUTADO HISTOGRAMADO 
+    RC1 - 7/3/2017
+-->
+
+<!DOCTYPE html>
+<html>
+    
+<head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <title>Deputado Histogramado</title>
+        <link rel="icon" href="favicon.ico" type="image/x-icon">
+<style>
+body { background-color: #8a8aff;}    
+    #backdiv {background-color:  rgba(255,255,255,0.5); width: 98%; margin: 1%; border-radius: 10px; min-height: 100px;}
+    h5 {font-family: Helvetica, Arial, sans-serif;}
+    h3 {font-family: Helvetica, Arial, sans-serif;}
+    h2 {font-family: Helvetica, arial, sans-serif; font-weight: normal;}
+    h1 {font-family: Impact, Futura-CondensedExtraBold, 'Arial Black', sans-serif;}
+    #click{position: relative; left:-56px; top:19px; margin: auto;}    
+</style>
+</head>
+    
+<body>
+    <div id="backdiv" name="main_backdiv">
+    <table style="width:100%">
+        <tr>
+        <td style="width:50%; border-right: solid 1px #000000;">
+            <div style="font-size: 4em; font-family: Impact, Futura-CondensedExtraBold, 'Arial Black', sans-serif; text-align: right; margin-right: 20px;">
+            Deputado<br/>
+            Histogramado
+            </div>
+        </td>
+        <td>
+        <center>
+            
+        </center>
+        <br>
+            <center>
+            
+                <table>
+                <!--<td><img style='width:64px;height:64px; transform: scaleX(-1);' src='icon.png'> </td>-->
+                <td>
+                <div style="font-size: 1.75em; font-family: Helvetica, sans-serif; text-align: center; margin: 0.4em;">
+                Intervenções Parlamentárias<br>
+                Em representações arbitrárias
+                </div>
+                </td>
+                
+                <td><img style='width:48px;height:48px;filter: grayscale(90%); ' src='icon.png'> </td>
+                    
+                </table>
+                <br>
+                <div style="font-size: 1.1em; font-family: Helvetica, sans-serif; text-align: middle; margin-left: 0.5em;">
+            Explore as temáticas das sessões do Parlamento Português <br>com gráficos e histogramas. Encontre a sua <!--<a href='https://www.priberam.pt/dlpo/parlamentada' style='color: black;'>parlamentada</a>-->favorita.
+            </div>
+                
+                <div style="margin: 10px; font-size: 0.75em; font-family: Helvetica, sans-serif; text-align: middle; margin-left: 0.5em;">
+                <a href='notebook jupyter' style='color: black;'>Como são feitas as contas</a>
+                </div>
+                
+                <div style="margin: 10px; font-size: 0.66em; font-family: Helvetica, sans-serif; text-align: middle; margin-left: 0.5em;">
+                Transcrições do Parlamento cortesia <a href='http://demo.cratica.org' style='color: black;'>demo.cratica.org</a> e claro, da <a href='https://www.parlamento.pt' style='color: black;'>Assembleia da República!</a>.
+                </div>
+           
+            </center>
+        </td>
+        </tr>
+    </table>  
+    </div>
+    
+    <div id="backdiv" name='plotmaindiv'>  
+    
+        <center>   
+            <br>
+            <div id="label1" style="font-size: 2em; font-family: Impact, Futura-CondensedExtraBold, 'Arial Black', sans-serif; text-align: middle; ">Quando foi dito</div>
+            
+            <input id="palavra" type="text" style="margin-left: 66px;font-size:2em; font-family: Impact, Futura-CondensedExtraBold, 'Arial Black', sans-serif; text-align: center;" name="expression" value="">
+            
+            <img src='search.jpg' id="click" onclick="requestHistogram()">
+            
+            <div id="label1" style="margin: 20px; font-size: 2em; font-family: Impact, Futura-CondensedExtraBold, 'Arial Black', sans-serif; text-align: middle;">na Assembleia da Républica desde 1976?</div>
+            
+            
+            
+            
+            <p id='loading' style="display: none; text-align: center; font-family: Helvetica; font-size: 16px;">A contar ocorrencias, Sr. Deputado!....</p>
+            <img id='pie' style="display: none; text-align: center;" src="pie.svg">
+            
+            <br/>
+            
+                <center><h2 id='selecciona' style='display: none;'>Seleccione um ano</h2></center>
+            <div id='plot' style="display:none; width:80%; height:350px; margin-top: 20px;margin-left:auto;margin-right:auto; border-radius=10px;"></div>
+                <center><h2 id='selecciona2' style='display: none;'>Seleccione uma sessão</h2></center>
+            <div id='subplot' style="display:none; width:90%; height:250px; margin-top: 20px;margin-left:auto;margin-right:auto;"></div>
+            
+            <br/>
+                
+            <div id='legenda'><center><a style='font-size: 24px; font-family: Helvetica; color: black;' id='linkRP'></a></center></div>
+                
+        </center> 
+        
+    </div>
+    
+    <div style="margin: 10px; font-size: 0.75em; font-family: Helvetica, sans-serif; text-align: center; margin: auto;">
+            Código no <a href='' style='color: black;'>github</a>
+    </div>
+    <div style="margin: 10px; font-size: 0.75em; font-family: Helvetica, sans-serif; text-align: center; margin: auto;">
+            Produção <a href='http://expressao.xyz' style='color: black;'>expressao.xyz</a>
+    </div>
+    <div style="margin: 10px; font-size: 0.4em; font-family: Helvetica, sans-serif; text-align: center; margin: auto;">
+     Este sítio tem um propósito meramente informativo.<br>Não nos responsabilizamos por qualquer erro, omissão ou <br>pelos resultados decorrentes das informações aqui contidas.
+        </div>
+    
+   <center> <p id='querytime'></p> </center>
+    
+    <div id='links' style='display: none; text-align: center;'>
+        <div style='align:center;'><a href="http://expressao.xyz/radio/index.php"> <img height=20px src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg" href="https://commons.wikimedia.org/wiki/File:Flag_of_Portugal.svg">Radio Parlamento</a><img height=20px src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg" href="https://commons.wikimedia.org/wiki/File:Flag_of_Portugal.svg"></div>
+        <br/>
+        <div style='align:center;'><a href="./index.de.php"> <img height=20px src="https://upload.wikimedia.org/wikipedia/en/b/ba/Flag_of_Germany.svg">Radio Bundestag</a><img height=20px src="https://upload.wikimedia.org/wikipedia/en/b/ba/Flag_of_Germany.svg"></div>
+        
+        <br/>
+         <div style='align:center;'><a href="./index.dk.php"> <img height=20px src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Flag_of_Denmark.svg">Radio Folketing</a><img height=20px src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Flag_of_Denmark.svg"></div>
+        
+        <br/>
+         <div style='align:center;'><a href="./index.el.php"> <img height=20px src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Greece.svg">Ελληνική Ραδιοφωνία</a><img height=20px src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Greece.svg"></div>
+    </div>
+    
+    <script type="text/javascript" src="plotly-cartesian.min.js"></script>
+    <script type="text/javascript" src="jquery.min.js"></script>
+    
+    <script type="text/javascript">
+
+//Utility functions: removeTags, get, capitalize
+var tagBody = '(?:[^"\'>]|"[^"]*"|\'[^\']*\')*';
+
+var tagOrComment = new RegExp(
+    '<(?:'
+    // Comment body.
+    + '!--(?:(?:-*[^->])*--+|-?)'
+    // Special "raw text" elements whose content should be elided.
+    + '|script\\b' + tagBody + '>[\\s\\S]*?</script\\s*'
+    + '|style\\b' + tagBody + '>[\\s\\S]*?</style\\s*'
+    // Regular name
+    + '|/?[a-z]'
+    + tagBody
+    + ')>',
+    'gi');
+function removeTags(html) 
+{
+  var oldHtml;
+  do 
+  {
+    oldHtml = html;
+    html = html.replace(tagOrComment, '');
+  } while (html !== oldHtml);
+  return html.replace(/</g, '&lt;');
+}
+function get(name){
+   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+      return decodeURIComponent(name[1]);
+}
+function capitalize(string) 
+{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+
+
+// 'main' starts here
+// helper 'globals'
+        parsed_data = [];
+        var d = new Date();
+        last_hover = d.getTime();
+        var nElem = 0;
+// register 'Enter' key on text input box as a histogram request event        
+        $("#palavra").keyup(function(event)
+                                  { if(event.keyCode == 13){ requestHistogram(); }});
+// do we have a GET for 'palavra'? if yes then write it directly in the input box, and schedule a requestHistogram after load        
+        var palavra = get("palavra");
+        console.log(palavra);
+        if(palavra != null)
+        {
+            $('#palavra').val(palavra);
+            setTimeout(requestHistogram,2000);
+        }
+        
+        // Whenever the user clicks on a bar in the daily histogram plot, open a new tab in radio parlamento
+        function click_function(data)
+        {
+            date = data.points[0].x;
+            console.log(date);
+            
+            var win = window.open('http://expressao.xyz/radio/index.php?y='+date.substr(0,4)+'&m='+date.substr(5,2)+'&d='+date.substr(8,2), '_blank');
+        }
+        
+        // Whenever the user hovers a bar in the daily histogram plot, update the link to radio parlamento at the bottom of the page
+        function hover_function2(data)
+        {
+            date = data.points[0].x;
+            ocorrencias = data.points[0].y;
+            if(ocorrencias == 0)
+                return;
+            if(ocorrencias == 1)
+                str1 = ' ocorrencia)';
+            else
+                str1 = ' ocorrencias)';
+                
+            
+            var url = 'http://expressao.xyz/radio/index.php?y='+date.substr(0,4)+'&m='+date.substr(5,2)+'&d='+date.substr(8,2);
+            $('#linkRP').attr('href',url);
+            $('#linkRP').text('Ouvir sessão de '+date.substr(0,4)+'/'+date.substr(5,2)+'/'+date.substr(8,2)+' na Rádio Parlamento ('+ocorrencias+str1);
+        }
+        
+        // Whenever the user hovers a bar in the yearly histogram plot, update the daily view
+        function hover_function(data,subplot_div,input)
+        {
+            $('#subplot').show();
+            $('#legenda').show();
+            $('#selecciona2').show();
+            subplot_div = document.getElementById('subplot');
+            
+            if(parsed_data == [])
+                return;
+            if(data == [])
+                return;
+            
+            
+            year = data.points[0].x;
+            
+            selected_items = parsed_data.filter(function(item){return item.date.substr(0,4) == year;});
+            
+            if(selected_items.length == 0)
+                return;
+            
+            x = selected_items.map(function(item){return item.date;});
+            y = selected_items.map(function(item){return item.count;});
+            date0 = year + '-01-01 00:00:00';
+            date1 = year + '-12-31 00:00:00';
+            // make sure there are at least 3 points, otherwise bar plot doesnt draw correctly
+            if(selected_items.length == 1)
+            {
+                x = [selected_items[0].date,date0,date1];
+                y = [selected_items[0].count,0,0];
+            }else
+            {
+                x.push(date0); y.push(0);
+                x.push(date1); y.push(0);
+            }
+            
+            maxY = Math.max.apply(null, y)+1;
+            
+            data = [{ x:  x, y: y, type: "bar"}];
+            var layout = {
+                     title: 'Ocorrências de '+input+' em '+year,
+                  autosize: true,
+                    margin: { l: 70, r: 25, b: 80, t: 50, pad: 0 }, 
+                     xaxis: { title: 'Mês/Ano', tickangle: 90, range: [date0, date1], nticks: 12},
+                     yaxis: { title: 'Ocorrências', range: [0,maxY]},
+                font: { family: 'Times, Times New Roman'}
+                
+                };
+            
+            Plotly.purge(subplot_div);
+            Plotly.plot(subplot_div, data, layout); 
+            
+            subplot_div.on('plotly_click', click_function);
+            subplot_div.on('plotly_hover', hover_function2);
+        }
+        
+        
+        // Callback from AJAX request, add data to page as an yearly histogram
+        function process_data(data,input,div)
+        {
+            var f = div.children();
+            
+            $('#loading').hide();
+            $('#pie').hide();
+            $('#subplot').hide();
+            
+            
+            $('#plot').show();
+            $('#selecciona').show();
+            
+            
+            
+            plot_div = document.getElementById('plot');
+            subplot_div = document.getElementById('subplot');
+            
+            
+            result = data.split(';');
+            $('#querytime').text(result[1]+' ms');
+            
+            data = result[0];
+            if(data != '[]')
+                data = data.substring(0, data.length - 2)+']';
+            
+            parsed_data = JSON.parse(data);
+            
+            
+            year = 0;
+            // function to reduce dataset from (day, number of daily occurences) to (year, occurences over that year)
+            function count_year(sum, item)
+            {
+                if(item.date.substr(0,4) == year)
+                    return sum + parseInt(item.count);
+                else return sum;
+            }
+                
+            // for every year, reduce dataset to the sum of occurences on that year    
+            years = []
+            count_per_year = []
+            for(year = 1976; year <= 2015; year++)
+            {
+                years.push(year);
+                count = parsed_data.reduce(count_year,0);
+                count_per_year.push(count);
+            }
+
+            data = [{ x:  years, y: count_per_year, type: "bar" }];
+            var layout = 
+                {
+                    title: 'Ocorrências de '+input,
+                  autosize: true,
+                  margin: { l: 70, r: 25, b: 70, t: 40, pad: 0 }, 
+                   xaxis: { title: 'Ano' , tickangle: 90},
+                   yaxis: { title: 'Ocorrências de '+input},
+                    font: { family: 'Times, Times New Roman'}
+                };
+            
+            Plotly.purge(plot_div);
+            Plotly.newPlot(plot_div , data, layout);
+            
+            
+            $('#palavra').text(input);
+            
+            
+            plot_div = document.getElementById('plot');
+            item = {points: [{x: plot_div.data[0].x[0]}]};
+            hover_function(item,subplot_div,input);
+
+            plot_div.on('plotly_hover', function(d,input_){return function(item){hover_function(item,d,input_);}}(subplot_div,input));
+        }
+  
+        
+         
+        // When the user enters a word, submit ajax request to get data from the backend (array of {date:'...',, counts-on-that-day:'...'})
+        function requestHistogram()
+        {
+            //sanitize input, remove tags
+            var input = removeTags(document.getElementById("palavra").value);
+            // update URL such that user can send it around if he wants
+            window.history.pushState(null,null, "./index.htm?palavra="+encodeURI(input));
+            
+            div = $('[name=plotmaindiv]');
+            $('#loading').show();
+            $('#pie').show();
+            div.show();
+            
+            //do AJAX request to deputado_ajax_3.php
+            var http = new XMLHttpRequest();
+            var url = "deputado_ajax_3.php";
+            var params = "word="+input;
+            http.open("POST", url, true);
+            http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            //callback:
+            http.onreadystatechange = function() 
+            {
+                if(http.readyState == 4 && http.status == 200) 
+                {
+                    process_data(http.responseText,input,div);
+                }
+            }
+            http.send(params);
+        }
+        
+        // END
+        
+    </script>
+</body>
